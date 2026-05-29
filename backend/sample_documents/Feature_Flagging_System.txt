@@ -1,0 +1,6 @@
+Feature Flagging and Progressive Rollout Standard
+=================================================
+Document Reference: Feature_Flagging_System.txt
+Date Created: 2026-05-29
+
+To enable continuous delivery, new features must be wrapped in feature flags using LaunchDarkly. Features are rolled out progressively (1%, 10%, 50%, 100%). Flags are cleaned up and removed from the codebase within 30 days of full release. Feature flags allow decoupling code releases from business launches.

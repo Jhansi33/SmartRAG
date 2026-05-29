@@ -1,0 +1,6 @@
+Global Data Privacy and GDPR Compliance Directive
+=================================================
+Document Reference: Data_Privacy_Compliance.txt
+Date Created: 2026-05-29
+
+To maintain GDPR compliance, users possess the right to be forgotten. Upon receiving a privacy request, the compliance team initiates a script purging user identifiers from MongoDB, Elasticsearch, and Redis cache. Encrypted backups retain data for 30 days before natural rotation wipes records. PII is encrypted at rest.

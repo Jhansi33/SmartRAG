@@ -1,0 +1,6 @@
+Customer Support Ticket Triage Guidelines
+=========================================
+Document Reference: Customer_Support_Triage.txt
+Date Created: 2026-05-29
+
+Support tickets are categorized: Tier 1: General inquiries (response in 24 hours). Tier 2: Feature bug reports (response in 4 hours). Tier 3: Outage / Security incident (response in 15 minutes). Tier 3 tickets immediately trigger PagerDuty alerts to the on-call engineering team. Support uses Zendesk integrations.

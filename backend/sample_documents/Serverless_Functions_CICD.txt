@@ -1,0 +1,6 @@
+Serverless Lambda Function CI/CD Procedures
+===========================================
+Document Reference: Serverless_Functions_CICD.txt
+Date Created: 2026-05-29
+
+AWS Lambda deployments are managed via Serverless Framework. CI/CD pipelines package functions, compile dependencies, and run unit tests. We enforce a 250MB size limit on zip deployments. Lambda functions are deployed using canary configurations (10% linear increments every 2 minutes) with automated rollbacks on CloudWatch alarms.

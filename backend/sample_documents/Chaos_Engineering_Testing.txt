@@ -1,0 +1,6 @@
+Chaos Engineering Resiliency Tests
+==================================
+Document Reference: Chaos_Engineering_Testing.txt
+Date Created: 2026-05-29
+
+We run automated chaos testing weekly using Chaos Mesh in the staging environment. Tests inject latency into DB queries, kill pods randomly, and simulate network partitions. Microservices must demonstrate graceful degradation, responding with cached data or custom fallbacks. Target recovery time objective (RTO) is 15 seconds.

@@ -1,0 +1,6 @@
+Enterprise MongoDB Sharding and Clustering
+==========================================
+Document Reference: MongoDB_Sharding_Guide.txt
+Date Created: 2026-05-29
+
+The MongoDB database uses sharding for scale. The shard key is tenant_id, ensuring balanced distribution across three shard clusters. Config servers are deployed in a replica set across three availability zones. Balanced chunks are checked daily, and jumbo chunks are manually split during off-peak hours.

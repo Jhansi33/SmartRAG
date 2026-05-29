@@ -1,0 +1,6 @@
+Microservice Inter-Service Communication Patterns
+=================================================
+Document Reference: Microservices_Communication.txt
+Date Created: 2026-05-29
+
+Stateless microservices communicate asynchronously using RabbitMQ message brokers. Synchronous calls use gRPC for high performance. JSON over HTTP is restricted to external gateway requests. Message schemas must be documented in Confluence. Failed messages are routed to Dead Letter Exchanges (DLX) for analysis.

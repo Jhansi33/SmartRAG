@@ -1,0 +1,6 @@
+Infrastructure Performance and Server Uptime
+============================================
+Document Reference: Server_Uptime_Monitoring.txt
+Date Created: 2026-05-29
+
+Uptime monitoring runs active ping checks every 60 seconds from three geographical regions (US, Europe, Asia) to our health check endpoint. Latency spikes > 500ms trigger warnings. Consecutive failed pings alert on-call teams via Opsgenie. Status pages are updated automatically showing active availability.

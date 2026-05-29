@@ -1,0 +1,6 @@
+Static Code Analysis and Linting Rules
+======================================
+Document Reference: Static_Code_Analysis.txt
+Date Created: 2026-05-29
+
+Python files are linted using Flake8 and formatted using Black. Frontend JS/JSX files are formatted using Prettier and checked via ESLint. Build pipelines automatically reject contributions that violate code linting structures. Code duplicate detection is run monthly, reporting matches > 5%.

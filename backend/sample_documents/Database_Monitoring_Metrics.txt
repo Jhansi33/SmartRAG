@@ -1,0 +1,6 @@
+Database Performance and Monitoring Metrics
+===========================================
+Document Reference: Database_Monitoring_Metrics.txt
+Date Created: 2026-05-29
+
+We monitor the following database health metrics in Datadog: 1. CPU Utilization (alert if > 80% for 5 mins). 2. Freeable Memory. 3. Active Connections Count. 4. Disk Queue Depth. 5. Index Hit Rate (should remain > 99%). Disk space exhaustion triggers alerts at 85% utilization, auto-expanding AWS EBS volumes.

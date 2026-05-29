@@ -1,0 +1,6 @@
+Remote Work Security and Equipment Rules
+========================================
+Document Reference: Remote_Work_Guidelines.txt
+Date Created: 2026-05-29
+
+Employees are permitted to work remotely. All corporate network traffic must route through the corporate tailscale VPN. Working on public Wi-Fi without active VPN is strictly prohibited. Hardware keys (YubiKey) are required for signing into AWS and GitHub. Reimbursed home office setup includes a monitor and chair.

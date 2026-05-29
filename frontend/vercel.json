@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "name": "domain-specific-rag-chatbot",
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

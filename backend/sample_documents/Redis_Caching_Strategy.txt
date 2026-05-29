@@ -1,0 +1,6 @@
+Redis Cache Eviction and TTL Standards
+======================================
+Document Reference: Redis_Caching_Strategy.txt
+Date Created: 2026-05-29
+
+Redis cache instances are configured with maxmemory-policy volatile-lru. All database cache entries must have a designated Time-To-Live (TTL). User sessions have a TTL of 2 hours. Config parameters and tenant settings have a TTL of 24 hours. Cache key formatting uses colon spacing: tenant:{id}:user:{id}.

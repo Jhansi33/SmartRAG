@@ -1,0 +1,6 @@
+Unit Testing Standards and Coverage Enforcements
+================================================
+Document Reference: Unit_Testing_Coverage.txt
+Date Created: 2026-05-29
+
+All Python services must achieve a minimum of 80% test coverage tracked by Coverage.py. Frontend React code requires Jest testing with 75% coverage. Build pipelines check coverage metrics during pull request builds. High-risk modules (auth, payment routers) require 100% test coverage.

@@ -1,0 +1,6 @@
+GraphQL Schema Federation Architecture
+======================================
+Document Reference: Graphql_Schema_Federation.txt
+Date Created: 2026-05-29
+
+Enterprise reporting uses a federated GraphQL gateway built on Apollo Federation. Microservices publish subgraph schemas to Apollo Studio. Schema changes are validated against composition breaking rules. Clients request data through a single gateway endpoint, which optimizes queries across subgraphs.

@@ -1,0 +1,6 @@
+Production Release Approval Standards
+=====================================
+Document Reference: Production_Release_Approvals.txt
+Date Created: 2026-05-29
+
+Deployments to production require a pull request approved by at least two senior engineers and a signed Change Advisory Board (CAB) ticket. Production releases are scheduled for Tuesdays and Thursdays between 05:00 and 07:00 UTC. Hotfixes require immediate VP of Engineering approval and automated smoke tests.

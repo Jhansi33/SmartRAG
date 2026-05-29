@@ -1,0 +1,6 @@
+SaaS Enterprise Security Overview
+=================================
+Document Reference: SaaS_Security_Overview.txt
+Date Created: 2026-05-29
+
+This document outlines the security architecture for the SaaS Platform. We employ AES-256 encryption at rest and TLS 1.3 in transit. Authentication is managed via Okta SSO with mandatory multi-factor authentication (MFA). Security audits are conducted bi-annually by external Certified Information Systems Auditors (CISA). Network segmentation is enforced across VPCs.

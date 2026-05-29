@@ -1,0 +1,6 @@
+Docker Build and Container Logging Setup
+========================================
+Document Reference: Docker_Build_Logging.txt
+Date Created: 2026-05-29
+
+All Docker container builds must export logs in JSON format to stdout. Container host nodes run Vector agents that forward stdout logs directly to Datadog. Docker files must use official base images from verified registries. Multi-stage builds are required to keep final container images under 150MB in size.

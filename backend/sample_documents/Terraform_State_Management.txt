@@ -1,0 +1,6 @@
+Terraform State Locking and Storage SOP
+=======================================
+Document Reference: Terraform_State_Management.txt
+Date Created: 2026-05-29
+
+Terraform state files must be stored in a centralized, encrypted S3 bucket. State locking is enforced using a DynamoDB table. State buckets have Versioning enabled. Manual state editing is strictly forbidden. Changes to infrastructure must be committed to git and executed via GitHub Actions CI pipelines.

@@ -1,0 +1,6 @@
+VPC Peering Security Controls
+=============================
+Document Reference: VPC_Peering_Security.txt
+Date Created: 2026-05-29
+
+VPC peering connections are restricted to internal microservice clusters. Inter-VPC traffic is routed strictly through AWS Transit Gateway with Security Groups locking port ranges. Peer networks must not have overlapping CIDR blocks. Port 22 (SSH) and 3389 (RDP) are disabled across VPC boundaries, relying on SSM Session Manager.

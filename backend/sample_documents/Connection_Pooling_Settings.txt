@@ -1,0 +1,6 @@
+HikariCP and PgBouncer Connection Pooling
+=========================================
+Document Reference: Connection_Pooling_Settings.txt
+Date Created: 2026-05-29
+
+To avoid database thread exhaustion, microservices connecting to PostgreSQL must route traffic through PgBouncer connection poolers. Client connection pool size is capped at 20 active connections per container. Timeout settings: connection timeout 30s, idle timeout 10 minutes, max lifetime 30 minutes.

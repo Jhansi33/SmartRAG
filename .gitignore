@@ -1,0 +1,36 @@
+# Virtual Environment
+backend/venv/
+backend/env/
+backend/.venv/
+venv/
+.venv/
+env/
+
+# Environment Variables (Security Secrets)
+backend/.env
+.env
+.env.local
+
+# Python Cache & Compiled Files
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local Vector Storage & Database Cache
+backend/vector_storage/
+
+# Node Modules (Frontend)
+frontend/node_modules/
+node_modules/
+
+# Production Builds
+frontend/dist/
+dist/
+
+# OS Files
+.DS_Store
+Thumbs.db

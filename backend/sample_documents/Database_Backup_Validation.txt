@@ -1,0 +1,6 @@
+Database Backup Restore Validation Protocol
+===========================================
+Document Reference: Database_Backup_Validation.txt
+Date Created: 2026-05-29
+
+Automated daily database backups are stored in AWS S3 with Glacier vault locks. Every Sunday at 01:00 UTC, an automated restore test launches a temporary DB instance in an isolated subnet, restores the backup, and runs verification SQL tests. Restore status is sent to Slack. Backup failure immediately alerts on-call DBAs.
