@@ -21,7 +21,7 @@ backend/.env
 htmlcov/
 
 # Local Vector Storage & Database Cache
-backend/vector_storage/
+# (Tracked in Git to enable pre-built vector search in production)
 
 # Node Modules (Frontend)
 frontend/node_modules/
