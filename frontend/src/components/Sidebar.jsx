@@ -37,7 +37,7 @@ const Sidebar = () => {
     { path: '/tag-generator', label: 'Tag Generator', icon: Hash, adminOnly: false },
     { path: '/feedback-database', label: 'Feedback QA', icon: Database, adminOnly: false },
     { path: '/evaluation-metrics', label: 'Evaluation RAG', icon: BarChart3, adminOnly: false },
-    { path: '/upload-documents', label: 'Upload System', icon: UploadCloud, adminOnly: true },
+    { path: '/upload-documents', label: 'Upload System', icon: UploadCloud, adminOnly: false },
     { path: '/profile-settings', label: 'Profile Settings', icon: Settings, adminOnly: false },
   ];
 

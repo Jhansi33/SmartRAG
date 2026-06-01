@@ -9,7 +9,7 @@ router = APIRouter(prefix="/documents", tags=["Document Management"])
 @router.post("/upload", response_model=DocumentResponse, status_code=status.HTTP_201_CREATED)
 async def upload_file(
     file: UploadFile = File(...),
-    current_admin: dict = Depends(AuthService.get_current_admin),
+    current_user: dict = Depends(AuthService.get_current_user),
     db = Depends(get_db)
 ):
     """Admin only: Upload a document (.pdf, .docx, .txt), extract, chunk, embed, and store."""
@@ -43,7 +43,7 @@ async def list_files(
 @router.delete("/{doc_id}", status_code=status.HTTP_200_OK)
 async def delete_file(
     doc_id: str,
-    current_admin: dict = Depends(AuthService.get_current_admin),
+    current_user: dict = Depends(AuthService.get_current_user),
     db = Depends(get_db)
 ):
     """Admin only: Remove a document and clear its vector index representation."""

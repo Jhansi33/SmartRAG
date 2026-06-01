@@ -76,7 +76,7 @@ function App() {
             <Route
               path="/upload-documents"
               element={
-                <ProtectedRoute requireAdmin={true}>
+                <ProtectedRoute>
                   <AppLayout>
                     <UploadDocuments />
                   </AppLayout>
