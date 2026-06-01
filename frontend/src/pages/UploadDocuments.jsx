@@ -125,8 +125,8 @@ const UploadDocuments = () => {
             <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100 mb-2">Ingest New Knowledge File</h3>
             <p className="text-xs text-slate-400 mb-6">Upload corporate PDFs, technical DOCX files, or plain text procedures to seed the RAG index.</p>
             
-            {isAdmin ? (
-              // Active Dropzone for Admin
+            {true ? (
+              // Active Dropzone for all users
               <div 
                 onClick={handleBrowseFiles}
                 className="border-2 border-dashed border-slate-200 hover:border-brand-500 dark:border-slate-800 dark:hover:border-brand-500 rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer transition-colors duration-200 group bg-slate-50/50 dark:bg-slate-900/10"
@@ -226,7 +226,7 @@ const UploadDocuments = () => {
                   <th className="pb-3">Type</th>
                   <th className="pb-3 text-center">RAG Chunks Count</th>
                   <th className="pb-3">Upload Date</th>
-                  {isAdmin && <th className="pb-3 text-right">Actions</th>}
+                  {true && <th className="pb-3 text-right">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100/50 dark:divide-slate-800/20">
@@ -249,7 +249,7 @@ const UploadDocuments = () => {
                     <td className="py-4 text-slate-500 dark:text-slate-400">
                       {new Date(doc.uploadDate).toLocaleDateString()}
                     </td>
-                    {isAdmin && (
+                    {true && (
                       <td className="py-4 text-right">
                         <button
                           onClick={() => handleDeleteDocument(doc._id, doc.filename)}

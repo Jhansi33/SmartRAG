@@ -84,29 +84,74 @@ class RAGService:
     @classmethod
     async def ask_chatbot(cls, user_id: str, question: str, limit: int = 10, db = None) -> dict:
         """RAG core pipeline: Query -> Retrieve -> Evaluate -> Synthesize -> Log -> Respond."""
-        # 1. Retrieve top 4 similar chunks from the vector database
-        retrieved = vector_store.search(question, top_k=4)
+        # Detect standard greetings or chitchat
+        q_clean = question.strip().lower().replace("?", "").replace("!", "").replace(".", "")
+        greetings = {"hi", "hello", "hey", "hola", "greetings", "good morning", "good afternoon", "good evening", "howdy"}
+        chitchat = {
+            "how are you": "I'm doing great, thank you! Ready to help you explore the enterprise knowledge base. What would you like to know today?",
+            "who are you": "I am your Enterprise Domain RAG Assistant. Ask me anything about SaaS security, databases, deployment pipelines, partner referrals, or HR onboarding documents!",
+            "thanks": "You're very welcome! Let me know if you have any other questions.",
+            "thank you": "You're very welcome! Let me know if you have any other questions.",
+            "bye": "Goodbye! Have a wonderful day!",
+            "goodbye": "Goodbye! Have a wonderful day!"
+        }
         
-        # 2. Check if relevant content is found (Score threshold of 0.55)
-        # Score is normalized between 0.0 and 1.0 (where 0.5 is neutral)
-        has_relevance = len(retrieved) > 0 and retrieved[0]["score"] >= 0.55
+        is_conversational = False
+        answer = ""
+        sources = []
         
-        if not has_relevance:
-            answer = "I could not find relevant information in the knowledge base."
+        if q_clean in greetings:
+            answer = "Hello! I am your Enterprise Domain RAG Assistant. How can I help you today? Feel free to ask me any questions about SaaS security, database indexing, deployments, or employee onboarding."
+            is_conversational = True
+        elif q_clean in chitchat:
+            answer = chitchat[q_clean]
+            is_conversational = True
+            
+        if is_conversational:
             sources = []
         else:
-            sources = retrieved
-            # 3. Generate answer: Try LLM first if environment keys exist, otherwise fall back offline
-            answer = ""
-            context_str = "\n\n".join([f"Source [{s['filename']}]: {s['snippet']}" for s in sources])
-            
-            if settings.OPENAI_API_KEY:
-                answer = await cls._generate_llm_answer(question, context_str, "openai", settings.OPENAI_API_KEY)
-            elif settings.GEMINI_API_KEY:
-                answer = await cls._generate_llm_answer(question, context_str, "gemini", settings.GEMINI_API_KEY)
+            # Check docs count to give a helpful prompt if empty
+            docs_count = await db.documents.count_documents({}) if db is not None else 0
+            if docs_count == 0:
+                answer = (
+                    "I notice that the RAG knowledge base is currently empty (0 files uploaded).\n\n"
+                    "To enable intelligent question-answering, you can:\n"
+                    "1. **Upload your own files** (.pdf, .docx, .txt) using the **Upload System** page in the sidebar.\n"
+                    "2. **Seed the database with sample documents** (includes 52 rich business documents) by running the seeder script in the backend.\n\n"
+                    "Once files are indexed, I'll be able to retrieve exact source chunks and synthesize high-quality answers for you!"
+                )
+                sources = []
+            else:
+                # 1. Retrieve top 4 similar chunks from the vector database
+                retrieved = vector_store.search(question, top_k=4)
                 
-            if not answer:
-                answer = cls._generate_offline_answer(question, sources)
+                # 2. Check if relevant content is found (Score threshold of 0.55)
+                # Score is normalized between 0.0 and 1.0 (where 0.5 is neutral)
+                has_relevance = len(retrieved) > 0 and retrieved[0]["score"] >= 0.55
+                
+                if not has_relevance:
+                    answer = (
+                        f"I couldn't find any specific information in the uploaded documents regarding your query about *\"{question}\"*.\n\n"
+                        "However, I am fully equipped to help you with other enterprise topics! You can ask me about:\n"
+                        "- **SaaS Security**: standard encryption, MFA, password rotation, and admin privileges SOP.\n"
+                        "- **CI/CD & DevOps**: staging pipelines, release approvals, Docker building, and Kubernetes ingress.\n"
+                        "- **Database & Cache**: index optimizations, Redis caching strategy, PgBouncer pooling, and sharding.\n"
+                        "- **HR & Partner Policies**: onboarding procedures, remote work rules, SLA commitments, and referral guidelines.\n\n"
+                        "Could you please try rephrasing your question or asking about one of these areas?"
+                    )
+                    sources = []
+                else:
+                    sources = retrieved
+                    # 3. Generate answer: Try LLM first if environment keys exist, otherwise fall back offline
+                    context_str = "\n\n".join([f"Source [{s['filename']}]: {s['snippet']}" for s in sources])
+                    
+                    if settings.OPENAI_API_KEY:
+                        answer = await cls._generate_llm_answer(question, context_str, "openai", settings.OPENAI_API_KEY)
+                    elif settings.GEMINI_API_KEY:
+                        answer = await cls._generate_llm_answer(question, context_str, "gemini", settings.GEMINI_API_KEY)
+                        
+                    if not answer:
+                        answer = cls._generate_offline_answer(question, sources)
 
         # 4. Generate dynamic suggested questions based on question keywords
         suggested = cls._generate_suggested_questions(question)
