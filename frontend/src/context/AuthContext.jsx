@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(profileRes.data));
       return profileRes.data;
     } catch (err) {
-      throw err.response?.data?.detail || 'Login failed. Please check your credentials.';
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
       // Log in automatically after registration
       return await login(email, password);
     } catch (err) {
-      throw err.response?.data?.detail || 'Registration failed. Please try again.';
+      throw err;
     } finally {
       setLoading(false);
     }
