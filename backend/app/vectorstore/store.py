@@ -2,7 +2,6 @@ import os
 import pickle
 import logging
 import numpy as np
-from sentence_transformers import SentenceTransformer
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -20,10 +19,17 @@ class VectorStoreManager:
     _encoder = None
     
     @classmethod
-    def get_encoder(cls) -> SentenceTransformer:
+    def get_encoder(cls):
         """Singleton accessor for the local sentence transformer model."""
         if cls._encoder is None:
             logger.info("Initializing SentenceTransformer Model (all-MiniLM-L6-v2)...")
+            try:
+                import torch
+                torch.set_num_threads(1)
+                torch.set_num_interop_threads(1)
+            except ImportError:
+                pass
+            from sentence_transformers import SentenceTransformer
             # This loads the model locally. If not found, it downloads it once and caches it.
             cls._encoder = SentenceTransformer("all-MiniLM-L6-v2")
             logger.info("SentenceTransformer model loaded successfully!")
