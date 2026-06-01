@@ -21,7 +21,7 @@ const Register = () => {
       await register(name, email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(typeof err === 'string' ? err : 'Registration failed. Please check inputs.');
+      setError(err.response?.data?.detail || err.message || 'Registration failed. Please check inputs.');
     } finally {
       setLoading(false);
     }

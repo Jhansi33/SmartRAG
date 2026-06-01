@@ -20,7 +20,7 @@ const Login = () => {
       await login(email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(typeof err === 'string' ? err : 'Invalid login credentials. Please try again.');
+      setError(err.response?.data?.detail || err.message || 'Invalid login credentials. Please try again.');
     } finally {
       setLoading(false);
     }
