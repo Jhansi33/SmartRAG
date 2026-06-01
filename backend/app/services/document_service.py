@@ -1,11 +1,12 @@
 import os
+import tempfile
 from datetime import datetime
 from bson import ObjectId
 from app.database.connection import get_db
 from app.utils.text_processor import TextProcessor
 from app.vectorstore.store import vector_store
 
-UPLOAD_DIR = "./uploads"
+UPLOAD_DIR = os.path.join(tempfile.gettempdir(), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 class DocumentService:
@@ -31,7 +32,7 @@ class DocumentService:
         
         # 5. Embed chunks and save in vector database
         if chunks_count > 0:
-            vector_store.add_documents(filename, chunks)
+            await vector_store.add_documents(filename, chunks, db)
 
         # 6. Save metadata to MongoDB
         doc_entry = {
@@ -59,7 +60,7 @@ class DocumentService:
             file_path = doc["documentPath"]
 
             # 2. Remove document chunks from active Vector Store
-            vector_store.delete_documents(filename)
+            await vector_store.delete_documents(filename, db)
 
             # 3. Remove physical file from disk
             if os.path.exists(file_path):

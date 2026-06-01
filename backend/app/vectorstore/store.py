@@ -2,6 +2,8 @@ import os
 import pickle
 import logging
 import numpy as np
+import tempfile
+from datetime import datetime
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -49,7 +51,7 @@ class VectorStoreManager:
         # Load existing index on startup
         self.load()
 
-    def add_documents(self, filename: str, text_chunks: list[str]):
+    async def add_documents(self, filename: str, text_chunks: list[str], db=None):
         """Generate embeddings for list of text chunks and append them to the vector store."""
         if not text_chunks:
             return
@@ -72,10 +74,14 @@ class VectorStoreManager:
             
         # Re-build/update active index
         self._rebuild_index()
-        self.save()
+        
+        if db is not None:
+            await self.save_to_db(db)
+        else:
+            self.save()
         logger.info(f"Document '{filename}' successfully embedded and stored.")
 
-    def delete_documents(self, filename: str):
+    async def delete_documents(self, filename: str, db=None):
         """Remove all text chunks matching specific filename and rebuild index."""
         if not self.chunks:
             return
@@ -97,7 +103,10 @@ class VectorStoreManager:
                 
             self._rebuild_index()
             
-        self.save()
+        if db is not None:
+            await self.save_to_db(db)
+        else:
+            self.save()
         logger.info(f"Document '{filename}' successfully deleted from vector store.")
 
     def _rebuild_index(self):
@@ -211,6 +220,72 @@ class VectorStoreManager:
             self.metadata = []
             self.embeddings = None
             self.faiss_index = None
+
+    async def save_to_db(self, db):
+        """Serialize index and metadata, and save as a binary snapshot in MongoDB to support serverless/Vercel read-only filesystems."""
+        try:
+            # Serialize raw chunks, metadata, and embeddings to bytes
+            metadata_bytes = pickle.dumps((self.chunks, self.metadata, self.embeddings))
+            
+            faiss_bytes = b""
+            if FAISS_AVAILABLE and self.faiss_index is not None:
+                # Write FAISS index to a temp file
+                temp_dir = tempfile.gettempdir()
+                temp_file = os.path.join(temp_dir, "temp_faiss.bin")
+                faiss.write_index(self.faiss_index, temp_file)
+                with open(temp_file, "rb") as f:
+                    faiss_bytes = f.read()
+                # Clean up temp file
+                if os.path.exists(temp_file):
+                    os.remove(temp_file)
+                    
+            snapshot = {
+                "_id": "singleton_index",
+                "metadata_bytes": metadata_bytes,
+                "faiss_bytes": faiss_bytes,
+                "updatedAt": datetime.utcnow()
+            }
+            
+            await db.vector_store_snapshots.replace_one(
+                {"_id": "singleton_index"},
+                snapshot,
+                upsert=True
+            )
+            logger.info("Vector database snapshot saved successfully to MongoDB.")
+        except Exception as e:
+            logger.error(f"Failed to save vector database snapshot to MongoDB: {str(e)}")
+
+    async def load_from_db(self, db):
+        """Fetch and deserialize vector database snapshot from MongoDB (serverless persistence). Fall back to disk if not found."""
+        try:
+            snapshot = await db.vector_store_snapshots.find_one({"_id": "singleton_index"})
+            if snapshot:
+                metadata_bytes = snapshot.get("metadata_bytes")
+                faiss_bytes = snapshot.get("faiss_bytes")
+                
+                if metadata_bytes:
+                    self.chunks, self.metadata, self.embeddings = pickle.loads(metadata_bytes)
+                    
+                if FAISS_AVAILABLE and faiss_bytes:
+                    temp_dir = tempfile.gettempdir()
+                    temp_file = os.path.join(temp_dir, "temp_faiss_load.bin")
+                    with open(temp_file, "wb") as f:
+                        f.write(faiss_bytes)
+                    self.faiss_index = faiss.read_index(temp_file)
+                    if os.path.exists(temp_file):
+                        os.remove(temp_file)
+                    logger.info("Loaded FAISS index from MongoDB snapshot.")
+                else:
+                    self._rebuild_index()
+                    
+                logger.info(f"Vector store loaded successfully from MongoDB: {len(self.chunks)} chunks cataloged.")
+            else:
+                logger.info("No MongoDB snapshot found. Loading pre-seeded vector index from disk.")
+                self.load()
+        except Exception as e:
+            logger.error(f"Failed to load vector database snapshot from MongoDB: {str(e)}")
+            # Fall back to disk
+            self.load()
 
 # Global instance of vector store manager
 vector_store = VectorStoreManager()
