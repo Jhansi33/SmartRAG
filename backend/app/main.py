@@ -34,6 +34,10 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_db_client():
     await MongoDB.connect()
+    # Pre-load SentenceTransformer model in a background thread to prevent first-query request lag
+    import threading
+    from app.vectorstore.store import vector_store
+    threading.Thread(target=vector_store.get_encoder, daemon=True).start()
     logger.info("Application Startup Sequence Complete.")
 
 @app.on_event("shutdown")
