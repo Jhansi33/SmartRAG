@@ -4,12 +4,13 @@ import {
   User, Shield, Mail, Calendar, Key, Database, 
   Cpu, FileText, CheckCircle2, AlertCircle 
 } from 'lucide-react';
+import { API_BASE_URL } from '../services/api';
 
 const ProfileSettings = () => {
   const { user, isAdmin } = useAuth();
 
   const systemChecklist = [
-    { name: 'FastAPI Connection', status: 'Active', desc: 'React Axios client is actively routing to http://localhost:8000/api' },
+    { name: 'FastAPI Connection', status: 'Active', desc: `React Axios client is actively routing to ${API_BASE_URL}` },
     { name: 'MongoDB Database', status: 'Connected', desc: 'Asynchronous Motor client successfully initialized collections and indices' },
     { name: 'Vector Store Storage', status: 'Active', desc: 'Local FAISS / NumPy vector databases mapped to backend/vector_storage/' },
     { name: 'Semantic NLP Model', status: 'all-MiniLM-L6-v2', desc: 'Thread-safe encoder initialized locally on the server (100% Offline & Free)' }

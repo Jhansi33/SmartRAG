@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     # Vector storage
     VECTOR_STORAGE_DIR: str = "./vector_storage"
 
+    # CORS Settings
+    ALLOWED_ORIGINS: str = "http://localhost:5173"
+
     # Optional Keys
     OPENAI_API_KEY: str = ""
     GEMINI_API_KEY: str = ""
