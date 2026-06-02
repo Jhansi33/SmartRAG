@@ -2,6 +2,7 @@ import logging
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import TEXT, ASCENDING, DESCENDING
 from app.config import settings
+from fastapi import HTTPException, status
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,8 @@ class MongoDB:
             await cls._setup_indexes()
         except Exception as e:
             logger.error(f"Failed to connect to MongoDB: {str(e)}")
-            raise e
+            cls.client = None
+            cls.db = None
 
     @classmethod
     async def disconnect(cls):
@@ -74,5 +76,8 @@ class MongoDB:
 def get_db():
     """Dependency helper to retrieve the active MongoDB database."""
     if MongoDB.db is None:
-        raise RuntimeError("Database not initialized. Please call MongoDB.connect() first.")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Database is not connected. Check the backend MONGODB_URI environment variable and MongoDB Atlas network access.",
+        )
     return MongoDB.db

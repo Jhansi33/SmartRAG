@@ -34,14 +34,17 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_db_client():
     await MongoDB.connect()
-    
-    # Load the vector store index and metadata from MongoDB snapshot
-    from app.vectorstore.store import vector_store
-    await vector_store.load_from_db(MongoDB.db)
-    
-    # Pre-load SentenceTransformer model in a background thread to prevent first-query request lag
-    import threading
-    threading.Thread(target=vector_store.get_encoder, daemon=True).start()
+
+    if MongoDB.db is not None:
+        # Load the vector store index and metadata from MongoDB snapshot
+        from app.vectorstore.store import vector_store
+        await vector_store.load_from_db(MongoDB.db)
+
+        # Pre-load SentenceTransformer model in a background thread to prevent first-query request lag
+        import threading
+        threading.Thread(target=vector_store.get_encoder, daemon=True).start()
+    else:
+        logger.warning("MongoDB is not connected. API health endpoints will stay online, but authenticated app routes will return 503.")
     
     logger.info("Application Startup Sequence Complete.")
 
@@ -66,6 +69,15 @@ async def root_health_check():
         "service": "Domain-Specific RAG Chatbot API",
         "version": "1.0.0",
         "documentation": "/docs"
+    }
+
+@app.get("/healthz", tags=["Health Check"])
+async def health_check():
+    """Lightweight health check for Render and deployment diagnostics."""
+    return {
+        "status": "healthy",
+        "databaseConnected": MongoDB.db is not None,
+        "service": "Domain-Specific RAG Chatbot API"
     }
 
 if __name__ == "__main__":
