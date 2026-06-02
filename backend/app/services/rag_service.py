@@ -164,6 +164,7 @@ class RAGService:
             "retrievalAccuracy": metrics["retrievalAccuracy"],
             "precisionAtK": metrics["precisionAtK"],
             "recallAtK": metrics["recallAtK"],
+            "contextRelevance": metrics["contextRelevance"],
             "answerRelevance": metrics["answerRelevance"],
             "responseQuality": metrics["responseQuality"],
             "createdAt": datetime.utcnow()

@@ -125,7 +125,7 @@ const UploadDocuments = () => {
             <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100 mb-2">Ingest New Knowledge File</h3>
             <p className="text-xs text-slate-400 mb-6">Upload corporate PDFs, technical DOCX files, or plain text procedures to seed the RAG index.</p>
             
-            {true ? (
+            {isAdmin ? (
               // Active Dropzone for all users
               <div 
                 onClick={handleBrowseFiles}
@@ -197,7 +197,7 @@ const UploadDocuments = () => {
           </div>
 
           <div className="mt-6 pt-4 border-t border-slate-200/50 dark:border-slate-800/40 flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-            <Info size={14} className="text-brand-500" /> Fully Local Ingestion Engine
+            <Info size={14} className="text-brand-500" /> MongoDB-backed ingestion engine
           </div>
         </div>
       </div>
@@ -226,7 +226,7 @@ const UploadDocuments = () => {
                   <th className="pb-3">Type</th>
                   <th className="pb-3 text-center">RAG Chunks Count</th>
                   <th className="pb-3">Upload Date</th>
-                  {true && <th className="pb-3 text-right">Actions</th>}
+                  {isAdmin && <th className="pb-3 text-right">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100/50 dark:divide-slate-800/20">
@@ -249,7 +249,7 @@ const UploadDocuments = () => {
                     <td className="py-4 text-slate-500 dark:text-slate-400">
                       {new Date(doc.uploadDate).toLocaleDateString()}
                     </td>
-                    {true && (
+                    {isAdmin && (
                       <td className="py-4 text-right">
                         <button
                           onClick={() => handleDeleteDocument(doc._id, doc.filename)}

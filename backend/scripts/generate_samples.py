@@ -347,7 +347,7 @@ async def index_documents_in_rag(db):
         chunks_count = len(chunks)
         
         if chunks_count > 0:
-            vector_store.add_documents(filename, chunks)
+            await vector_store.add_documents(filename, chunks, db)
             
         # Save metadata to MongoDB
         doc_entry = {
@@ -360,6 +360,7 @@ async def index_documents_in_rag(db):
         await db.documents.insert_one(doc_entry)
         print(f"Indexed: {filename} ({chunks_count} chunks)")
         
+    await vector_store.save_to_db(db)
     print("Vector storage successfully populated and synchronized with MongoDB!")
 
 async def main():
