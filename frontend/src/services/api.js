@@ -10,6 +10,7 @@ export const API_BASE_URL = configuredApiBaseUrl || 'http://localhost:8000/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -33,6 +34,12 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.code === 'ECONNABORTED') {
+      error.message = 'The backend did not respond in time. Check that your deployed API is awake and connected to MongoDB.';
+    } else if (!error.response) {
+      error.message = `Cannot reach the backend at ${API_BASE_URL}. Check VITE_API_BASE_URL, backend deployment status, and CORS allowed origins.`;
+    }
+
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');

@@ -17,8 +17,9 @@ class MongoDB:
         
         try:
             logger.info(f"Connecting to MongoDB at {settings.MONGODB_URI}...")
-            cls.client = AsyncIOMotorClient(settings.MONGODB_URI)
+            cls.client = AsyncIOMotorClient(settings.MONGODB_URI, serverSelectionTimeoutMS=10000)
             cls.db = cls.client[settings.DATABASE_NAME]
+            await cls.client.admin.command("ping")
             logger.info("MongoDB Connection Successful!")
             
             # Setup Indexes
